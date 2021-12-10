@@ -2,7 +2,7 @@ package internal
 
 import (
 	"errors"
-	"github.com/xiaobogaga/fakedb2/util"
+	"github.com/blastbao/fakedb2/util"
 	"sync"
 )
 

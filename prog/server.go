@@ -2,8 +2,8 @@ package prog
 
 import (
 	"context"
-	"github.com/xiaobogaga/fakedb2/internal"
-	"github.com/xiaobogaga/fakedb2/util"
+	"github.com/blastbao/fakedb2/internal"
+	"github.com/blastbao/fakedb2/util"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 	"net"

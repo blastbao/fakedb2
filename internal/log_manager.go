@@ -4,8 +4,8 @@ import (
 	"context"
 	"encoding/binary"
 	"fmt"
-	"github.com/kr/pretty"
-	"github.com/xiaobogaga/fakedb2/util"
+	//"github.com/kr/pretty"
+	"github.com/blastbao/fakedb2/util"
 	"io"
 	"os"
 	"sync"
@@ -26,7 +26,11 @@ type LogManager struct {
 	LastCheckPointLsn      int64
 	ActiveTransactionTable map[uint64]*TransactionTableEntry
 	FlushDuration          time.Duration
+
+
+	// 最大事务 ID
 	MaxTransactionId       uint64
+	// 最大时间戳
 	MaxTimeStamp           int64
 }
 
@@ -60,14 +64,17 @@ func ReadLastCheckPoint(reader *os.File) (int64, error) {
 }
 
 func NewLogManager(ctx context.Context, bufferSize int, checkPointFileName string, WAL string, flushDuration time.Duration) (*LogManager, error) {
+	// 打开 CheckPoint 文件
 	checkPointWriter, err := os.OpenFile(checkPointFileName, os.O_CREATE|os.O_RDWR, 0666)
 	if err != nil {
 		return nil, err
 	}
+	// 读取上个 CheckPoint 对应的 LSN
 	lastCheckPointLsn, err := ReadLastCheckPoint(checkPointWriter)
 	if err != nil {
 		return nil, err
 	}
+	// 打开 wal 文件
 	wal, err := os.OpenFile(WAL, os.O_CREATE|os.O_RDWR, 0666)
 	if err != nil {
 		return nil, err
@@ -96,15 +103,16 @@ type LogRecord struct {
 	UndoNextLsn   int64
 	TransactionId uint64
 	PageId        int32
-	TP            LogRecordType
-	ActionTP      ActionType
+	TP            LogRecordType	// 日志类型
+	ActionTP      ActionType	// 操作类型
+
 	// Todo:
-	StartTs     int64
-	CommitTs    int64
-	BeforeValue []byte
-	AfterValue  []byte
-	Done        chan bool
-	Force       bool
+	StartTs     int64		// 开始时间
+	CommitTs    int64		// 提交时间
+	BeforeValue []byte		// 旧值
+	AfterValue  []byte		// 新值
+	Done        chan bool	// 落盘回调
+	Force       bool		// 强制落盘
 }
 
 type ActionType byte
@@ -283,9 +291,11 @@ func (log *LogRecord) String() string {
 			log.UndoNextLsn, log.StartTs, log.CommitTs, LogRecordTypeNameMap[log.TP], log.Len())
 	case CheckPointEndLogType:
 		transTable, commitStatus := DeserializeTransactionTableEntryAndPageCommitTable(log.BeforeValue)
-		trans := pretty.Sprintf("%v", transTable)
-		dirtyPages := pretty.Sprintf("%v", DeserializeDirtyPageRecord(log.AfterValue))
-		commitTable := pretty.Sprintf("%v", commitStatus)
+
+		trans := fmt.Sprintf("%v", transTable)
+		dirtyPages := fmt.Sprintf("%v", DeserializeDirtyPageRecord(log.AfterValue))
+		commitTable := fmt.Sprintf("%v", commitStatus)
+
 		return fmt.Sprintf("log: lsn: %d, prevLsn: %d, undoNextLsn: %d, startTs: %d, commitTs: %d, log: %s, trans: %s, dirtyPages: %s, commit: %s, len: %d.",
 			log.LSN, log.PrevLsn, log.UndoNextLsn, log.StartTs, log.CommitTs, LogRecordTypeNameMap[log.TP], trans, dirtyPages, commitTable, log.Len())
 	case SetLogType, CompensationLogType:

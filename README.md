@@ -5,7 +5,7 @@ Built for learning purpose.
 
 ```shell script
 go get github.com/xiaobogaga/fakedb2
-go install github.com/xiaobogaga/fakedb2/fakedb2
+go install github.com/blastbao/fakedb2/fakedb2
 ```
 
 ## Usage

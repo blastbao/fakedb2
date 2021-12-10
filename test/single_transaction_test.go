@@ -3,8 +3,8 @@ package test
 import (
 	"context"
 	"github.com/stretchr/testify/assert"
-	"github.com/xiaobogaga/fakedb2/prog"
-	"github.com/xiaobogaga/fakedb2/util"
+	"github.com/blastbao/fakedb2/prog"
+	"github.com/blastbao/fakedb2/util"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 	"math/rand"

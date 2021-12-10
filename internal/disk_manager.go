@@ -1,7 +1,7 @@
 package internal
 
 import (
-	"github.com/xiaobogaga/fakedb2/util"
+	"github.com/blastbao/fakedb2/util"
 	"io"
 	"os"
 	"sync"
@@ -24,6 +24,8 @@ func NewDiskManager(dataFile string) (*DiskManager, error) {
 	return &DiskManager{Writer: writer}, nil
 }
 
+
+// 写入第 index 个页
 func (disk *DiskManager) Write(index int32, page *Page) error {
 	disk.Lock.Lock()
 	defer disk.Lock.Unlock()
@@ -46,6 +48,8 @@ func (disk *DiskManager) Write(index int32, page *Page) error {
 	return nil
 }
 
+
+// 读取第 index 个页
 func (disk *DiskManager) Read(index int32) (page *Page, err error) {
 	disk.Lock.Lock()
 	defer disk.Lock.Unlock()

@@ -3,8 +3,8 @@ package main
 import (
 	"context"
 	"flag"
-	"github.com/xiaobogaga/fakedb2/prog"
-	"github.com/xiaobogaga/fakedb2/util"
+	"github.com/blastbao/fakedb2/prog"
+	"github.com/blastbao/fakedb2/util"
 	"time"
 )
 
